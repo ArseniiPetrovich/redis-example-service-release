@@ -1,0 +1,20 @@
+#!/bin/bash -e
+
+<% if p('health-check.insert-override') %>
+echo "Random-insert errand override detected"
+exit 1
+<% end %>
+
+sleep <%= p('health-check.insert-sleep') %>
+
+redis_host="<%= link('redis').instances[0].address %>"
+redis_password="<%= link('redis').p('redis.password') %>"
+
+response=$(/var/vcap/packages/redis/bin/redis-cli -h "$redis_host" -a "$redis_password" set test $(head /dev/urandom | tr -dc A-Za-z0-9))
+
+if [ "$response" != "OK" ]; then
+  echo "Redis insert health check failed: insert returned $response"
+  exit 1
+fi
+
+echo "Redis insert health check successful: ping returned $response"
