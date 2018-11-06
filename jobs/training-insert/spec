@@ -1,0 +1,19 @@
+---
+name: training-insert
+templates:
+  training-insert.sh.erb: bin/training-insert.sh
+
+packages:
+- redis
+
+consumes:
+  - name: redis
+    type: redis
+
+properties:
+  training-insert.insert-override:
+    description: For the purposes of system tests, allow errand failure to be configured
+    default: false
+  training-insert.insert-sleep:
+    description: For the purposes of system tests, allow a sleep (in seconds) to be configured
+    default: 0
